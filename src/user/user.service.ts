@@ -1,6 +1,7 @@
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
+import { FindUserDto } from './dto/find-users.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.model';
 
@@ -23,4 +24,19 @@ export class UserService {
   updateUser(id: number, updateUserDto: UpdateUserDto) {
     return this.userModel.update(updateUserDto, { where: { id: id } });
   }
+
+  findUsers(findUsersDto: FindUserDto): Promise<User[]> {
+    const where: any = {};
+    if (findUsersDto.name) {
+      where.name = findUsersDto.name;
+    }
+    if (findUsersDto.email) {
+      where.email = findUsersDto.email;
+    }
+    return this.userModel.findAll({ where });
+  }
+  deleteUser(id: string) {
+    return this.userModel.destroy({ where: { id } })
+  }
+
 }
