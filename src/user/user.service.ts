@@ -5,12 +5,14 @@ import { FindUserDto } from './dto/find-users.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.model';
 
+
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User)
     private userModel: typeof User,
   ) { }
+
 
   async createUser(createUserDto: CreateUserDto) {
     const user = await this.userModel.findOne({
