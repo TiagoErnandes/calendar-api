@@ -27,7 +27,7 @@ export class UserService {
     return this.userModel.update(updateUserDto, { where: { id: id } });
   }
 
-  findUsers(findUsersDto: FindUserDto): Promise<User[]> {
+  findUsers(findUsersDto?: FindUserDto): Promise<User[]> {
     const where: any = {};
     if (findUsersDto.name) {
       where.name = findUsersDto.name;
@@ -36,6 +36,9 @@ export class UserService {
       where.email = findUsersDto.email;
     }
     return this.userModel.findAll({ where });
+  }
+  findOneUser(id: number) {
+    return this.userModel.findOne({ where: { id: id } })
   }
   deleteUser(id: string) {
     return this.userModel.destroy({ where: { id } })

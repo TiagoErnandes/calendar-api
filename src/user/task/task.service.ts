@@ -1,27 +1,30 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import { UserService } from "../user.service";
 import { Task } from "./task.model";
 
 @Injectable()
 export class TaskService {
   constructor(
+    private userService: UserService,
+
     @InjectModel(Task)
-    private userModel: typeof Task,
+    private taskModel: typeof Task,
   ) { }
 
   async createTask(task) {
-    try {
-      return await this.userModel.create(task);
-    } catch (error) {
-      return `user not found for task ${error}`;
+    const isUser = await this.userService.findOneUser(task.userId);
+    if (!isUser) {
+      throw new BadRequestException('Usuario não existe');
     }
+    return await this.taskModel.create(task);
   }
 
   async findTasks(id: number) {
-    return await this.userModel.findAll({ where: { userId: id } });
+    return await this.taskModel.findAll({ where: { userId: id } });
   }
 
   async deleteAllTasks(id: number) {
-    return await this.userModel.destroy({ where: { userId: id } });
+    return await this.taskModel.destroy({ where: { userId: id } });
   }
 }
